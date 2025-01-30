@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "Wallet Nombres",
+    "description": "Extensión para mejorar la visión de los movimientos en la Wallet de Consultora Mutual",
+    "version": "1.0",
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": "default_icon.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["content.js"],
+          "matches": [
+            "https://wallet.consultoramutual.com.ar/movimientos/*"
+          ]
+        }
+      ],
+	  	"browser_specific_settings": {
+  	"gecko": {
+        "id": "{4e39a8d9-2bfa-43c2-b562-dc8f9a265a6a}"
+        }
+    }
+  }

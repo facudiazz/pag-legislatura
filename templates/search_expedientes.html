@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buscar Expediente y Archivos</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        color: #343a40;
+        font-family: Arial, sans-serif;
+      }
+
+      .navbar {
+        background-color: #343a40;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand img {
+        height: 150px;
+      }
+
+      .navbar-nav .nav-link {
+        color: #939699 !important;
+        transition: color 0.3s ease;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: #495057 !important;
+      }
+
+      .navbar-nav .btn-link {
+        color: #6c757d !important;
+        font-weight: 400;
+        font-size: 1rem;
+        transition: color 0.3s ease;
+      }
+
+      .navbar-nav .btn-link:hover {
+        color: #495057 !important;
+        text-decoration: none;
+      }
+
+      .theme-dark {
+        background-color: #343a40;
+        color: #f8f9fa;
+      }
+
+      .theme-dark .navbar {
+        background-color: #212529 !important;
+      }
+
+      .theme-dark .navbar-nav .nav-link {
+        color: #f8f9fa !important;
+      }
+
+      .theme-dark .navbar-nav .btn-link {
+        color: #f8f9fa !important;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes animate8345 {
+        0%,
+        100% {
+          filter: hue-rotate(0deg);
+        }
+        50% {
+          filter: hue-rotate(360deg);
+        }
+      }
+
+      .loader-background {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 9998;
+      }
+
+      .loader {
+        display: none;
+        color: rgb(0, 0, 0);
+        background: linear-gradient(to right, #2d60ec, #3ccfda);
+        font-size: 30px;
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        animation: animate8345 9s linear infinite;
+        font-weight: bold;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+      }
+
+      .custom-button {
+        font-family: inherit;
+        font-size: 20px;
+        color: white;
+        padding: 0.5em 0.5em;
+        padding-left: 0.9em;
+        width: 20vw;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        border: none;
+        border-radius: 15px;
+        font-weight: 1000;
+        background-size: 200% 200%;
+        background-color: #17a2b8;
+        animation: gradientAnimation 5s ease infinite;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+      }
+      @media screen and (max-width: 720px) {
+        .custom-button {
+          width: 50%;
+        }
+      }
+
+      .theme-dark .custom-button {
+        background-color: #555;
+        border: 1px solid #555;
+      }
+
+      .theme-dark .custom-button:hover {
+        background-color: #777;
+        border-color: #777;
+      }
+
+      .custom-button:hover {
+        background-color: #17a2b8;
+      }
+
+      .custom-button span {
+        display: block;
+        color: white;
+        margin-left: 0.3em;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .custom-button svg {
+        display: block;
+        fill: #fff;
+        transform-origin: center center;
+        transition: transform 0.3s ease-in-out;
+      }
+
+      .custom-button:hover .svg-wrapper {
+        transform: scale(1.25);
+        transition: 0.5s linear;
+      }
+
+      .custom-button:hover svg {
+        transform: translateX(1.2em) scale(1.1);
+        fill: #fff;
+      }
+
+      .custom-button:hover span {
+        opacity: 0;
+        transition: 0.5s linear;
+      }
+
+      .custom-button:active {
+        transform: scale(0.95);
+      }
+    </style>
+  </head>
+  <body class="theme-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img
+            src="../static/legislatura4.png"
+            alt="Logo de la empresa"
+            class="logo mr-2 img-fluid"
+            id="navbar-logo"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-nav nav-link" id="toggleThemeBtn">
+                Cambiar Modo
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mt-5">
+      <h1 class="mb-4">Buscar Expediente y Archivos</h1>
+      <form id="expedienteForm">
+        <div class="form-group row">
+          <label for="nroExpediente" class="col-sm-3 col-form-label"
+            >Número de Expediente:</label
+          >
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              id="nroExpediente"
+              name="NroExpediente"
+              placeholder="Ingrese Número de Expediente"
+              required="true"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="anoExpediente" class="col-sm-3 col-form-label"
+            >Año de Expediente:</label
+          >
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              id="anoExpediente"
+              name="AnioExpediente"
+              placeholder="Ingrese el Año Parlamentario del Expediente"
+              required="true"
+            />
+          </div>
+        </div>
+        <div class="form-group row">
+          <button type="submit" class="custom-button">
+            <div class="svg-wrapper-1">
+              <div class="svg-wrapper">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 19.9 19.7"
+                  width="24"
+                  height="24"
+                  class="icon search-icon"
+                >
+                  <g stroke="white" fill="none" class="search-path">
+                    <path
+                      d="M18.5 18.3l-5.4-5.4"
+                      stroke-linecap="square"
+                    ></path>
+                    <circle r="7" cy="8" cx="8"></circle>
+                  </g>
+                </svg>
+              </div>
+            </div>
+            <span>Buscar</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="resultado" class="mt-5"></div>
+    </div>
+
+    <div class="loader-background"></div>
+    <div class="loader">Cargando...</div>
+
+    <script>
+      document.querySelectorAll("form").forEach((form) => {
+        form.addEventListener("submit", function () {
+          document.querySelector(".loader-background").style.display = "block";
+          document.querySelector(".loader").style.display = "block";
+
+          setTimeout(() => {
+            document.querySelector(".loader-background").style.display = "none";
+            document.querySelector(".loader").style.display = "none";
+          }, 5000);
+        });
+      });
+
+      const prefersDarkScheme = window.matchMedia(
+        "(prefers-color-scheme: dark)"
+      );
+
+      function toggleTheme() {
+        const body = document.body;
+        const navbarBrandImg = document.getElementById("navbar-logo");
+
+        if (prefersDarkScheme.matches) {
+          body.classList.add("theme-dark");
+          navbarBrandImg.src = "../static/legislatura4-dark.webp";
+        } else {
+          body.classList.remove("theme-dark");
+          navbarBrandImg.src = "../static/legislatura4.webp";
+        }
+      }
+
+      toggleTheme();
+
+      prefersDarkScheme.addListener(toggleTheme);
+
+      function toggleTheme() {
+        const body = document.body;
+        const navbarBrandImg = document.getElementById("navbar-logo");
+        const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+
+        body.classList.toggle("theme-dark");
+
+        if (body.classList.contains("theme-dark")) {
+          navbarBrandImg.src = "../static/legislatura4-dark.webp";
+          toggleThemeBtn.textContent = "Modo Claro";
+        } else {
+          navbarBrandImg.src = "../static/legislatura4.webp";
+          toggleThemeBtn.textContent = "Modo Oscuro";
+        }
+      }
+
+      document
+        .getElementById("toggleThemeBtn")
+        .addEventListener("click", toggleTheme);
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document
+        .getElementById("expedienteForm")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+
+          var form = event.target;
+          var formData = new FormData(form);
+
+          fetch(
+            "https://parlamentaria.legislatura.gob.ar/webservices/json.asmx/GetExpedienteByNroyAnio",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+              body: new URLSearchParams(formData),
+            }
+          )
+            .then((response) => response.text())
+            .then((xmlString) => {
+              var parser = new DOMParser();
+              var xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+              var expedientes =
+                xmlDoc.getElementsByTagName("expedienteAvanzado");
+              if (expedientes.length === 0) {
+                throw new Error(
+                  "No se encontraron expedientes para el número y año especificados."
+                );
+              }
+
+              var resultadoHTML = "";
+              for (var i = 0; i < expedientes.length; i++) {
+                var expediente = expedientes[i];
+                var idExpediente =
+                  expediente.getElementsByTagName("id_expediente")[0]
+                    .textContent;
+                var nroExpediente =
+                  expediente.getElementsByTagName("nro_de_expediente")[0]
+                    .textContent;
+                var fechaInicio =
+                  expediente.getElementsByTagName("fch_inicio")[0].textContent;
+                var autor =
+                  expediente.getElementsByTagName("autor_des")[0].textContent;
+                var coautores =
+                  expediente.getElementsByTagName("coautores_des")[0]
+                    .textContent;
+                var tipoProyecto =
+                  expediente.getElementsByTagName("tipo_proyecto_des")[0]
+                    .textContent;
+                var descripcion =
+                  expediente.getElementsByTagName("descripcion")[0].textContent;
+                var sumario =
+                  expediente.getElementsByTagName("sumario")[0].textContent;
+
+                resultadoHTML += '<div class="col-md-6 mb-4">';
+                resultadoHTML += '<div class="card">';
+                resultadoHTML += '<div class="card-body">';
+                resultadoHTML +=
+                  '<h5 class="card-title">Resultado de Expediente ' +
+                  (i + 1) +
+                  "</h5>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>ID de Expediente:</strong> ' +
+                  idExpediente +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Número de Expediente:</strong> ' +
+                  nroExpediente +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Fecha de Inicio:</strong> ' +
+                  fechaInicio +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Autor:</strong> ' +
+                  autor +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Coautores:</strong> ' +
+                  coautores +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Tipo de Proyecto:</strong> ' +
+                  tipoProyecto +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Descripción:</strong> ' +
+                  descripcion +
+                  "</p>";
+                resultadoHTML +=
+                  '<p class="card-text"><strong>Sumario:</strong> ' +
+                  sumario +
+                  "</p>";
+                resultadoHTML +=
+                  '<a href="https://parlamentaria.legislatura.gob.ar/pages/expediente.aspx?id=' +
+                  idExpediente +
+                  '" class="btn btn-primary btn-ver">Ver Detalles del Expediente</a>';
+                resultadoHTML += "</div>";
+                resultadoHTML += "</div>";
+                resultadoHTML += "</div>";
+              }
+
+              document.getElementById("resultado").innerHTML = resultadoHTML;
+            })
+            .catch((error) => {
+              console.error("Error al buscar expedientes:", error);
+              document.getElementById("resultado").innerHTML =
+                '<div class="alert alert-danger" role="alert">No se encontraron expedientes para el número y año especificados.</div>';
+            });
+        });
+    </script>
+  </body>
+</html>

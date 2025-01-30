@@ -1,0 +1,23 @@
+{
+    "manifest_version": 3,
+    "name": "MP Actividades",
+    "description": "Actividades en chiquito de mercadopago",
+    "version": "1.0",
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": "default_icon.png"
+    },
+    "content_scripts": [
+        {
+          "js": ["content.js"],
+          "matches": [
+            "https://www.mercadopago.com.ar/*"
+          ]
+        }
+      ],
+	"browser_specific_settings": {
+  	"gecko": {
+        "id": "{4e59add9-2bba-43ca-d521-8d0f3bcd3b7a}"
+        }
+    }
+  }

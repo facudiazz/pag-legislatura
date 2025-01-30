@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es-ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión como Administrador</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      background-color: #212529;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 350px;
+      background: #f8f9fd;
+      border-radius: 40px;
+      padding: 25px 35px;
+      border: 5px solid rgb(255, 255, 255);
+      box-shadow: rgba(133, 189, 215, 0.878) 0px 30px 30px -20px;
+    }
+
+    .heading {
+      text-align: center;
+      font-weight: 900;
+      font-size: 30px;
+      color: rgb(16, 137, 211);
+      margin-bottom: 20px;
+    }
+
+    .form .input {
+      width: 100%;
+      background: white;
+      border: none;
+      padding: 15px 20px;
+      border-radius: 20px;
+      margin-top: 15px;
+      box-shadow: 0 10px 10px -5px #cff0ff;
+    }
+
+    .form .input::placeholder {
+      color: rgb(170, 170, 170);
+    }
+
+    .form .input:focus {
+      outline: none;
+      border: 2px solid #12b1d1;
+    }
+
+    .form .login-button {
+      display: block;
+      width: 100%;
+      font-weight: bold;
+      color: white;
+      padding: 15px;
+      margin: 20px auto;
+      border-radius: 20px;
+      border: none;
+      transition: all 0.2s ease-in-out;
+      background: linear-gradient(45deg, #007bff, #28a745);
+      background-size: 200% 200%;
+      animation: gradientAnimation 5s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .form .login-button:hover::before {
+      transform: translateX(100%);
+    }
+
+    .form .login-button:hover {
+      transform: scale(1.03);
+      box-shadow: rgba(133, 189, 215, 0.878) 0px 23px 10px -20px;
+    }
+
+    .form .login-button:active {
+      transform: scale(0.95);
+      box-shadow: rgba(133, 189, 215, 0.878) 0px 15px 10px -10px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes animate8345 {
+      0%,
+      100% {
+        filter: hue-rotate(0deg);
+      }
+
+      50% {
+        filter: hue-rotate(360deg);
+      }
+    }
+
+    .loader-background {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9998;
+    }
+
+    .loader {
+      display: none;
+      color: rgb(0, 0, 0);
+      background: linear-gradient(to right, #2d60ec, #3ccfda);
+      font-size: 30px;
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      animation: animate8345 9s linear infinite;
+      font-weight: bold;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="heading">Iniciar Sesión como Administrador</div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  <form action="{{ url_for('admin_login') }}" method="post" class="form">
+    <input type="text" name="username" class="input" placeholder="Usuario" required />
+    <input type="password" name="password" class="input" placeholder="Contraseña" required />
+    <button type="submit" class="login-button">INGRESAR</button>
+  </form>
+</div>
+<script>
+  document.querySelectorAll("form").forEach((form) => {
+    form.addEventListener("submit", function() {
+      document.querySelector(".loader-background").style.display = "block";
+      document.querySelector(".loader").style.display = "block";
+    });
+  });
+</script>
+<div class="loader-background"></div>
+<div class="loader">Cargando...</div>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es-ar">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar expediente</title>
+    <link id="theme-style" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body.dark-mode {
+        background-color: #333;
+        color: #fff;
+      }
+
+      body.dark-mode .form-control {
+        background-color: #444;
+        color: #fff;
+      }
+
+      body.dark-mode .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      body.dark-mode .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+      }
+
+      body.dark-mode .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
+
+      body.dark-mode .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+      }
+
+      .alert-info {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h2 class="mb-4">Editar expediente</h2> {% with messages = get_flashed_messages() %} {% if messages %} <div class="alert alert-info"> {% for message in messages %} <p>{{ message }}</p> {% endfor %} </div> {% endif %} {% endwith %} <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="Save">
+        <div class="form-group">
+          <label for="name">Nombre del archivo</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ file.name }}" required>
+        </div>
+        <div class="form-group">
+          <label for="category">Categoría</label>
+          <select name="category" class="form-control">
+            <option value="Categoria1" {% if file.category == 'Categoria1' %} selected {% endif %}>Leyes</option>
+            <option value="Categoria2" {% if file.category == 'Categoria2' %} selected {% endif %}>Resoluciones</option>
+            <option value="Categoria3" {% if file.category == 'Categoria3' %} selected {% endif %}>Declaraciones</option>
+            <option value="Categoria4" {% if file.category == 'Categoria4' %} selected {% endif %}>Hace Consideraciones</option>
+            <option value="Categoria5" {% if file.category == 'Categoria5' %} selected {% endif %}>Escuelas</option>
+            <option value="Categoria6" {% if file.category == 'Categoria6' %} selected {% endif %}>Remite Actuaciones</option>
+            <option value="Categoria7" {% if file.category == 'Categoria7' %} selected {% endif %}>Sancionados</option>
+            <option value="Categoria8" {% if file.category == 'Categoria8' %} selected {% endif %}>Caducidades</option>
+            <option value="Categoria9" {% if file.category == 'Categoria9' %} selected {% endif %}>Segundo y Tercer Giro</option>
+            <option value="Categoria10" {% if file.category == 'Categoria10' %} selected {% endif %}>Asesores Doc.</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="expediente">N° Expediente</label>
+          <input type="text" class="form-control" id="expediente" name="expediente" value="{{ file.expediente }}" required>
+        </div>
+        <div class="form-group">
+          <label for="autor_coautor">Autor / Co-Autor</label>
+          <input type="text" class="form-control" id="autor_coautor" name="autor_coautor" value="{{ file.autor_coautor }}">
+        </div>
+        <div class="form-group">
+          <label for="sumario">Sumario</label>
+          <input type="text" class="form-control" id="sumario" name="sumario" value="{{ file.sumario }}">
+        </div>
+        <div class="form-group">
+          <label for="fecha_ingreso">Fecha de ingreso</label>
+          <input type="text" class="form-control" id="fecha_ingreso" name="fecha_ingreso" value="{{ file.fecha_ingreso }}">
+        </div>
+        <div class="form-group">
+          <label for="giros_posteriores">Giros posteriores</label>
+          <input type="text" class="form-control" id="giros_posteriores" name="giros_posteriores" value="{{ file.giros_posteriores }}">
+        </div>
+        <div class="form-group">
+          <label for="antecedentes">Antecedentes</label>
+          <input type="text" class="form-control" id="antecedentes" name="antecedentes" value="{{ file.antecedentes }}">
+        </div>
+        <div class="form-group">
+          <label for="relaciones">Relaciones</label>
+          <input type="text" class="form-control" id="relaciones" name="relaciones" value="{{ file.relaciones }}">
+        </div>
+        <h3>Archivos anexos existentes</h3>
+        <form method="post" enctype="multipart/form-data"> {% for attachment in attachments %} <p>
+            {{ attachment.name }}
+            <a href="{{ url_for('download_attachment', attachment_id=attachment.id) }}">Descargar</a>
+            <input type="checkbox" name="delete_attachment" value="{{ attachment.id }}"> Eliminar
+          </p> {% endfor %} <div class="form-group">
+            <label for="attachments">Subir archivos anexos:</label>
+            <input type="file" name="attachments" multiple class="form-control">
+          </div>
+          <input type="hidden" name="action" value="Save">
+          <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          <a href="{{ url_for('search_file', query=request.args.get('query')) }}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      function toggleDarkMode() {
+        let body = document.body;
+        body.classList.toggle('dark-mode');
+        let theme = body.classList.contains('dark-mode') ? 'dark' : 'light';
+        localStorage.setItem('theme', theme);
+      }
+      $(document).ready(function() {
+        let theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
+          document.body.classList.add('dark-mode');
+        }
+      });
+    </script>
+  </body>
+</html>

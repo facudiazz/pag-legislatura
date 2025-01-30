@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        margin: 0;
+        padding: 20px;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      h1,
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+
+      h1 {
+        margin-bottom: 2rem;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .navbar {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar-brand img {
+        height: 150px;
+      }
+
+      .navbar-nav .nav-link {
+        transition: color 0.3s ease;
+      }
+
+      .navbar-nav .nav-link:hover {
+        color: black !important;
+      }
+
+      /* Modo claro y oscuro */
+      .light-mode {
+        background-color: #fff;
+        color: #000;
+      }
+
+      .light-mode .navbar {
+        background-color: #f8f9fa !important;
+      }
+
+      .light-mode .navbar-nav .nav-link {
+        color: #007bff !important;
+      }
+
+      .dark-mode {
+        background-color: #333;
+        color: #f0f0f0;
+      }
+
+      .dark-mode .container {
+        background-color: #444 !important;
+      }
+
+      .dark-mode .navbar {
+        background-color: #333 !important;
+      }
+
+      .dark-mode .navbar-nav .nav-link {
+        color: #939699 !important;
+      }
+
+      .dark-mode .navbar-brand img {
+        content: url('../static/legislatura4-dark.webp');
+      }
+
+      .dark-mode h1,
+      .dark-mode h2 {
+        color: white;
+      }
+    </style>
+  </head>
+  <body class="light-mode">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">
+          <img src="../static/legislatura4.webp" alt="Logo de la empresa" class="logo mr-2 img-fluid" id="navbar-logo" />
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ml-auto align-items-center">
+            <li class="nav-item">
+              <a class="nav-link" href="/logout">Cerrar Sesión</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-dark" id="dark-mode-toggle">Cambiar Modo</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <h1>Admin Panel</h1>
+      <div class="animated-form">
+        <h2>Registrar Nuevo Usuario</h2>
+        <form method="POST" action="{{ url_for('admin_panel') }}">
+            <div>
+                <label for="username">Nombre de usuario:</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div>
+                <label for="password">Contraseña:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Agregar usuario</button>
+        </form>
+      </div>
+      <div class="animated-form">
+        <h2>Eliminar Usuario</h2>
+        <form action="{{ url_for('admin_panel') }}" method="post">
+          <label for="username_to_delete">Nombre de Usuario:</label>
+          <input type="text" id="username_to_delete" name="username_to_delete" required>
+          <button type="submit">Eliminar Usuario</button>
+        </form>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const body = document.body;
+        const navbarLogo = document.getElementById('navbar-logo');
+
+        function toggleDarkMode() {
+          if (body.classList.contains('dark-mode')) {
+            body.classList.remove('dark-mode');
+            darkModeToggle.textContent = 'Cambiar Modo Oscuro';
+            navbarLogo.src = '../static/legislatura4.webp';
+          } else {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'Cambiar Modo Claro';
+            navbarLogo.src = '../static/legislatura4-dark.webp';
+          }
+        }
+        darkModeToggle.addEventListener('click', function() {
+          toggleDarkMode();
+        });
+        const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function setDarkMode() {
+          if (prefersDarkScheme.matches) {
+            body.classList.add('dark-mode');
+            darkModeToggle.textContent = 'Cambiar Modo Claro';
+            navbarLogo.src = '../static/legislatura4-dark.webp';
+          } else {
+            body.classList.remove('dark-mode');
+            darkModeToggle.textContent = 'Cambiar Modo Oscuro';
+            navbarLogo.src = '../static/legislatura4.webp';
+          }
+        }
+        setDarkMode();
+        prefersDarkScheme.addListener(setDarkMode);
+      });
+    </script>
+  </body>
+</html>

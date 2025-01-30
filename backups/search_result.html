@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="es-ar">
+ <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultado de búsqueda</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+  <link rel="icon" href="../static/logo.png" type="image/x-icon">
+  <style>
+   body {
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    scroll-behavior: smooth;
+   }
+
+   .navbar {
+    background-color: #343a40;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   }
+
+   .navbar-brand img {
+    height: 150px;
+   }
+
+   .navbar-nav .nav-link {
+    color: #939699 !important;
+    transition: color 0.3s ease;
+   }
+
+   .btn-nav {
+    background-color: transparent !important;
+    border: none !important;
+    color: #939699 !important;
+    box-shadow: none !important;
+    transition: color 0.3s ease;
+   }
+
+   .btn-nav:hover {
+    background-color: transparent !important;
+    color: black !important;
+   }
+
+   .navbar-nav .nav-link:hover {
+    color: black !important;
+   }
+
+   .card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    opacity: 0;
+   }
+
+   .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+   }
+
+   .card-header {
+    background: linear-gradient(45deg, #007bff, #00bcd4);
+    color: white;
+    border-bottom: none;
+    padding: 20px;
+   }
+
+   @keyframes gradientAnimation {
+    0% {
+     background-position: 0% 50%;
+    }
+
+    50% {
+     background-position: 100% 50%;
+    }
+
+    100% {
+     background-position: 0% 50%;
+    }
+   }
+
+   .card-body {
+    padding: 30px;
+    font-family: 'Poppins', sans-serif;
+   }
+
+   .info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+   }
+
+   .info-item {
+    display: flex;
+    align-items: center;
+   }
+
+   .info-item i {
+    margin-right: 10px;
+    font-size: 1.2em;
+    color: #007bff;
+   }
+
+   .show-more-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background: none;
+    border: none;
+    color: #007bff;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+   }
+
+   .show-more-btn:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+   }
+
+   .show-more-btn i {
+    margin-left: 5px;
+    transition: transform 0.3s ease;
+   }
+
+   .show-more-btn.active i {
+    transform: rotate(180deg);
+   }
+
+   .card-background {
+    background-color: #f8f9fa;
+   }
+
+   .card-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+   }
+
+   .card-footer {
+    border-top: none;
+   }
+
+   .card-text {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+   }
+
+   .btn-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+   }
+
+   .btn-container .btn {
+    border-radius: 0.5rem;
+    margin: 5px;
+    flex: 1;
+   }
+
+   .additional-info {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+   }
+
+   .attachments-container {
+    margin-top: 15px;
+    border-top: 1px solid #dee2e6;
+    padding-top: 15px;
+   }
+
+   .attachment-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+   }
+
+   .attachment-item {
+    margin-bottom: 8px;
+   }
+
+   .attachment-link {
+    display: flex;
+    align-items: center;
+    padding: 6px 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    color: #495057;
+    text-decoration: none;
+   }
+
+   .attachment-link:hover {
+    background-color: #e9ecef;
+    color: #212529;
+   }
+
+   .attachment-link i {
+    margin-right: 8px;
+    color: #6c757d;
+   }
+
+   .theme-dark .attachments-container {
+    border-top-color: #495057;
+   }
+
+   .theme-dark .attachment-link {
+    background-color: #343a40;
+    color: #e9ecef;
+   }
+
+   .theme-dark .attachment-link:hover {
+    background-color: #495057;
+    color: #fff;
+   }
+
+   .theme-dark .attachment-link i {
+    color: #adb5bd;
+   }
+
+   @media (max-width: 767px) {
+    .btn-container {
+     flex-wrap: wrap;
+    }
+
+    .btn {
+     flex: 1 0 auto;
+     min-width: 150px;
+    }
+   }
+
+   @media (max-width: 768px) {
+    .btn-container .btn {
+     min-width: 135px;
+     margin: 5px;
+     flex: 1;
+    }
+   }
+
+   .btn:hover {
+    background-color: #e0e0e0;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15);
+   }
+
+   .btn-search {
+    transition: transform 0.3s ease;
+   }
+
+   .btn-search:hover {
+    transform: translateY(-3px);
+   }
+
+   .form-control {
+    border: 1px solid black;
+    border-radius: 0;
+   }
+
+   .compact-search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+   }
+
+   .compact-search .form-control {
+    width: auto;
+    flex: 1 1 auto;
+   }
+
+   .compact-search button {
+    flex: 0 0 auto;
+   }
+
+   .loader-background {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9998;
+   }
+
+   .loader {
+    display: none;
+    color: rgb(0, 0, 0);
+    background: linear-gradient(to right, #2d60ec, #3ccfda);
+    font-size: 30px;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    animation: animate8345 9s linear infinite;
+    font-weight: bold;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+   }
+
+   @keyframes animate8345 {
+
+    0%,
+    100% {
+     filter: hue-rotate(0deg);
+    }
+
+    50% {
+     filter: hue-rotate(360deg);
+    }
+   }
+
+   .light-mode {
+    background-color: #fff;
+    color: #000;
+   }
+
+   .light-mode .navbar {
+    background-color: #f8f9fa !important;
+   }
+
+   .light-mode .navbar-nav .nav-link {
+    .navbar-nav .nav-link {
+     color: #939699 !important;
+     transition: color 0.3s ease;
+    }
+
+    .light-mode .navbar-nav .nav-link:hover {
+     color: black !important;
+    }
+   }
+
+   .light-mode .card {
+    background-color: #fff;
+    color: #000;
+   }
+
+   .light-mode .card-header {
+    background: linear-gradient(45deg, #007bff, #28a745);
+    color: white;
+   }
+
+   .light-mode .additional-info {
+    color: #000;
+   }
+
+   /* Modo Oscuro */
+   .theme-dark {
+    background-color: #333;
+    color: #f0f0f0;
+   }
+
+   .theme-dark .container {
+    background-color: #333 !important;
+   }
+
+   .theme-dark .navbar {
+    background-color: #333 !important;
+   }
+
+   .theme-dark .navbar-brand {
+    color: #e0e0e0 !important;
+   }
+
+   .theme-dark .navbar-nav .nav-link {
+    color: #e0e0e0 !important;
+   }
+
+   .theme-dark .card {
+    background-color: #444;
+    color: #f0f0f0;
+   }
+
+   .theme-dark .card-header {
+    background: linear-gradient(45deg, #007bff, #28a745);
+    color: white;
+   }
+
+   .theme-dark .additional-info {
+    color: #f0f0f0;
+   }
+
+   .theme-dark .navbar-brand img {
+    content: url('../static/legislatura4-dark.webp');
+   }
+
+   #scrollToTopBtn {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    z-index: 9999;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    line-height: 50px;
+    border: none;
+    outline: none;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
+    animation: floatUpDown 2s ease-in-out infinite alternate;
+   }
+
+   #scrollToTopBtn span {
+    display: inline-block;
+   }
+
+   @keyframes floatUpDown {
+    0% {
+     transform: translateY(0);
+    }
+
+    50% {
+     transform: translateY(-5px);
+    }
+
+    100% {
+     transform: translateY(0);
+    }
+   }
+
+   #scrollToTopBtn:hover {
+    background-color: #0056b3;
+   }
+
+   .theme-dark #scrollToTopBtn {
+    background-color: #343a40;
+   }
+
+   @media (max-width: 768px) {
+    #scrollToTopBtn {
+     bottom: 20px;
+     right: 20px;
+     width: 40px;
+     height: 40px;
+     font-size: 18px;
+     line-height: 40px;
+    }
+   }
+
+   @keyframes fadeInUp {
+    from {
+     opacity: 0;
+     transform: translateY(20px);
+    }
+
+    to {
+     opacity: 1;
+     transform: translateY(0);
+    }
+    
+   }
+
+   .pagination {
+  margin-top: 20px;
+}
+
+.pagination .page-link {
+  color: #007bff;
+  background-color: #fff;
+  border: 1px solid #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+  z-index: 1;
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.pagination .page-link:hover {
+  color: #0056b3;
+  text-decoration: none;
+  background-color: #e9ecef;
+  border-color: #dee2e6;
+}
+
+.theme-dark .pagination .page-link {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #454d55;
+}
+
+.theme-dark .pagination .page-item.active .page-link {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.theme-dark .pagination .page-link:hover {
+  color: #fff;
+  background-color: #23272b;
+  border-color: #1d2124;
+}
+
+  </style>
+ </head>
+ <body class="light-mode">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation" aria-label="Main Navigation">
+   <div class="container">
+    <a class="navbar-brand" href="/">
+     <img src="../static/legislatura4.webp" alt="Logo Legislatura" class="logo mr-2 img-fluid" id="navbar-logo">
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+     <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+     <ul class="navbar-nav ml-auto align-items-center">
+      <li class="nav-item">
+       <a class="nav-link" href="/logout">Cerrar Sesión</a>
+      </li>
+      <li class="nav-item">
+       <button class="btn btn-nav nav-link" id="toggleThemeBtn"> Cambiar Modo </button>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="/calendar">Calendario</a>
+      </li>
+      <li class="nav-item">
+       <a class="nav-link" href="/search_expedientes">Buscador</a>
+      </li>
+     </ul>
+    </div>
+   </div>
+  </nav>
+  <div class="container mt-5" id="resultadoBusqueda">
+    <form id="searchForm" action="/search" method="get" class="compact-search">
+      <input type="text" id="expediente" name="expediente" class="form-control" placeholder="Número de Expediente" />
+      <input type="text" id="autor_coautor" name="autor_coautor" class="form-control" placeholder="Autor / Co-Autor" />
+      <select name="category" id="categoria" class="form-control">
+        <option value="">Todas las categorías</option>
+        <option value="Categoria1">Leyes</option>
+        <option value="Categoria2">Resoluciones</option>
+        <option value="Categoria3">Declaraciones</option>
+        <option value="Categoria4">Hace Consideraciones</option>
+        <option value="Categoria5">Escuelas</option>
+        <option value="Categoria6">Remite Actuaciones</option>
+        <option value="Categoria7">Sancionados</option>
+        <option value="Categoria8">Caducidades</option>
+        <option value="Categoria9">Segundo y Tercer Giro</option>
+        <option value="Categoria10">Asesores Doc.</option>
+      </select>
+      <select name="order" id="order" class="form-control">
+        <option value="">Ordenar por</option>
+        <option value="date_asc">Fecha Ascendente</option>
+        <option value="date_desc">Fecha Descendente</option>
+        <option value="name_asc">Nombre Ascendente</option>
+        <option value="name_desc">Nombre Descendente</option>
+      </select>    
+      <input type="text" name="sumario" class="form-control" placeholder="Sumario">
+      <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    
+   <h2 class="mb-4">Resultado de búsqueda</h2>
+   <div class="row"> {% if files %} {% for file in files %} <div class="col-md-6 mb-4">
+     <div class="card h-100">
+      <div class="card-header">
+       <h4 class="mb-0">{{ file.name }}</h4>
+      </div>
+      <div class="card-body">
+       <div class="info-grid">
+        <div class="info-item">
+         <i class="fas fa-file-alt"></i>
+         <span>
+          <strong>N° Expediente:</strong> {{ file.expediente }}
+         </span>
+        </div>
+        <div class="info-item">
+         <i class="fas fa-user"></i>
+         <span>
+          <strong>Autor / Co-Autor:</strong> {{ file.autor_coautor }}
+         </span>
+        </div>
+        <div class="info-item">
+         <i class="fas fa-tag"></i>
+         <span>
+          <strong>Categoría:</strong> {{ CATEGORY_NAMES.get(file.category, file.category) }}
+         </span>
+        </div>
+       </div>
+       <div class="additional-info">
+        <p class="card-text">
+         <strong>Sumario:</strong> {{ file.sumario }}
+        </p>
+        <p class="card-text">
+         <strong>Fecha de ingreso:</strong> {{ file.fecha_ingreso }}
+        </p>
+        <p class="card-text">
+         <strong>Giros posteriores:</strong> {{ file.giros_posteriores }}
+        </p>
+        <p class="card-text">
+         <strong>Antecedentes:</strong> {{ file.antecedentes }}
+        </p>
+        <p class="card-text">
+         <strong>Relaciones:</strong> {{ file.relaciones }}
+        </p> 
+        {% if file.custom_fields %}
+        {% for custom_field in file.custom_fields %}
+        <p class="card-text"><strong>{{ custom_field.name }}:</strong>
+            {% if custom_field.type == 'file' %}
+            <a href="/download_custom_file/{{ custom_field.id }}">{{ custom_field.value }}</a>
+            {% else %}
+            {{ custom_field.value }}
+            {% endif %}
+        </p>
+        {% endfor %}
+        {% endif %}
+        {% if file.attachments %} <div class="attachments-container">
+         <h6 class="card-subtitle mb-2">
+          <strong>Archivos Anexos</strong>
+         </h6>
+         <ul class="attachment-list"> {% for attachment in file.attachments %} <li class="attachment-item">
+           <a href="/download_attachment/{{ attachment.id }}" {% if not attachment.name.endswith('.pdf') %} download {% endif %} class="attachment-link">
+            <i class="fas fa-paperclip"></i>
+            <span>{{ attachment.name }}</span>
+           </a>
+          </li> {% endfor %} </ul>
+        </div> {% endif %}
+       </div>
+       <button class="show-more-btn" onclick="toggleAdditionalInfo(this)">
+        <span>Mostrar más</span>
+        <i class="fas fa-chevron-down"></i>
+       </button>
+      </div>
+      <div class="card-footer">
+       <div class="btn-container">
+        <a href="/download/{{ file.id }}" class="btn btn-primary">Descargar</a> {% if file.name.endswith('.pdf') %} <a href="/preview/{{ file.id }}" class="btn btn-secondary" target="_blank">Previsualizar</a> {% endif %} <form action="/delete/{{ file.id }}" method="post" onsubmit="return confirmDelete()">
+         <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+        <a href="/edit/{{ file.id }}" class="btn btn-warning">Editar</a>
+       </div>
+      </div>
+     </div>
+    </div> {% endfor %} {% else %} <div class="col-md-12">
+     <div class="alert alert-danger">Ningún expediente coincide con tu búsqueda</div>
+    </div> {% endif %} </div>
+    {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if pagination.page > 1 %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('search_file', page=pagination.page - 1) }}{% for key, value in request.args.items() if key != 'page' %}&{{ key }}={{ value }}{% endfor %}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% endif %}
+        {% for page in range(1, pagination.pages + 1) %}
+          {% if page != pagination.page %}
+          <li class="page-item"><a class="page-link" href="{{ url_for('search_file', page=page) }}{% for key, value in request.args.items() if key != 'page' %}&{{ key }}={{ value }}{% endfor %}">{{ page }}</a></li>
+          {% else %}
+          <li class="page-item active"><span class="page-link">{{ page }}</span></li>
+          {% endif %}
+        {% endfor %}
+        {% if pagination.page < pagination.pages %}
+        <li class="page-item">
+          <a class="page-link" href="{{ url_for('search_file', page=pagination.page + 1) }}{% for key, value in request.args.items() if key != 'page' %}&{{ key }}={{ value }}{% endfor %}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+    
+   <div class="loader-background"></div>
+   <div class="loader">Cargando...</div>
+  </div>
+  <button onclick="scrollToTop()" id="scrollToTopBtn" title="Ir arriba">
+   <span>⭡</span>
+  </button>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+   const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+   function toggleTheme() {
+    const body = document.body;
+    const navbarBrandImg = document.getElementById("navbar-logo");
+    if (prefersDarkScheme.matches) {
+     body.classList.add("theme-dark");
+     navbarBrandImg.src = "../static/legislatura4-dark.webp";
+    } else {
+     body.classList.remove("theme-dark");
+     navbarBrandImg.src = "../static/legislatura4.webp";
+    }
+   }
+   toggleTheme();
+   prefersDarkScheme.addListener(toggleTheme);
+
+   function toggleTheme() {
+    const body = document.body;
+    const navbarBrandImg = document.getElementById("navbar-logo");
+    const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+    body.classList.toggle("theme-dark");
+    if (body.classList.contains("theme-dark")) {
+     navbarBrandImg.src = "../static/legislatura4-dark.webp";
+     toggleThemeBtn.textContent = "Modo Claro";
+    } else {
+     navbarBrandImg.src = "../static/legislatura4.webp";
+     toggleThemeBtn.textContent = "Modo Oscuro";
+    }
+   }
+   document.getElementById("toggleThemeBtn").addEventListener("click", toggleTheme);
+
+   function animateCards() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+     card.style.animation = `fadeInUp 0.5s ease forwards ${index * 0.1}s`;
+    });
+   }
+
+   function toggleAdditionalInfo(button) {
+    const additionalInfo = button.previousElementSibling;
+    const icon = button.querySelector('i');
+    additionalInfo.style.maxHeight = additionalInfo.style.maxHeight ? null : additionalInfo.scrollHeight + "px";
+    button.classList.toggle('active');
+    if (button.classList.contains('active')) {
+     button.querySelector('span').textContent = 'Mostrar menos';
+    } else {
+     button.querySelector('span').textContent = 'Mostrar más';
+    }
+   }
+   document.querySelectorAll('.btn-container .btn').forEach(btn => {
+    btn.addEventListener('mouseover', function() {
+     this.style.transform = 'scale(1.05)';
+    });
+    btn.addEventListener('mouseout', function() {
+     this.style.transform = 'scale(1)';
+    });
+   });
+   document.addEventListener('DOMContentLoaded', animateCards);
+
+   function confirmDelete() {
+    return confirm('¿Estás seguro de que deseas eliminar este archivo?');
+   }
+
+   function scrollToTop() {
+    window.scrollTo({
+     top: 0,
+     behavior: 'smooth'
+    });
+   }
+   window.onscroll = function() {
+    scrollFunction()
+   };
+
+   function scrollFunction() {
+    var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+     scrollToTopBtn.style.display = "block";
+    } else {
+     scrollToTopBtn.style.display = "none";
+    }
+   }
+
+   function observeCards() {
+    const cards = document.querySelectorAll('.card');
+    const observer = new IntersectionObserver(entries => {
+     entries.forEach(entry => {
+      if (entry.isIntersecting) {
+       entry.target.classList.add('visible');
+      }
+     });
+    }, {
+     threshold: 0.5
+    });
+    cards.forEach(card => {
+     observer.observe(card);
+    });
+   }
+   observeCards();
+
+   document.querySelector('form').addEventListener('submit', function(event) {
+  const orderSelect = document.getElementById('order');
+  const selectedOrder = orderSelect.value;
+  
+  if (selectedOrder) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('order', selectedOrder);
+    window.location.href = url.toString();
+  }
+});
+
+  </script>
+ </body>
+</html>
